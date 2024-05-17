@@ -1,0 +1,30 @@
+stages:
+  - download
+  - build
+
+download:
+  stage: download
+  image: curlimages/curl:7.85.0
+  variables:
+    TREESITTER_MAKEFILE_URL: 'https://github.com/nvim-treesitter/nvim-treesitter/raw/master/scripts/compile_parsers.makefile'
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - compile_parsers.makefile
+  script: |
+    [ -f compile_parsers.makefile ] || curl -LOJ ${TREESITTER_MAKEFILE_URL}
+
+build:
+  stage: build
+  image: registry.gitlab.com/nickptails/treesitter
+  variables:
+    DEST_DIR: build
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - compile_parsers.makefile
+  script:
+    - make -f compile_parsers.makefile install
+  artifacts:
+    paths:
+      - $DEST_DIR/parser.so

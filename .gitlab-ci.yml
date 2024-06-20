@@ -32,7 +32,7 @@ download:
 
 build:
   stage: build
-  image: registry.gitlab.com/nickptails/treesitter
+  image: registry.gitlab.com/nickptails/tree-sitter
   variables:
     DEST_DIR: build
   cache:
